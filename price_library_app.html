@@ -1,8 +1,13 @@
 <h2 class="sr-only">Ứng dụng thư viện giá vật tư thiết bị - quản lý và so sánh giá theo dự án</h2>
 <style>
 :root {
-  --c-primary: #1A4E8C;
-  --c-accent: #E8A020;
+  --c-primary: #1E7FBE;
+  --c-primary-light: #4FA3D1;
+  --c-primary-dark: #0D5A8F;
+  --c-accent: #0A9FD7;
+  --c-accent-light: #5BC9E8;
+  --c-gray: #9CA3AF;
+  --c-gray-light: #E5E7EB;
   --c-surface: var(--color-background-primary);
   --c-surface2: var(--color-background-secondary);
   --c-border: var(--color-border-tertiary);
@@ -21,43 +26,44 @@ body{font-family:var(--font-sans);color:var(--c-text);font-size:14px;}
 
 .topbar{display:flex;align-items:center;gap:12px;padding:14px 0 12px;border-bottom:0.5px solid var(--c-border);margin-bottom:16px;}
 .topbar-title{font-size:17px;font-weight:500;flex:1;}
-.topbar-badge{background:#1A4E8C;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.topbar-badge{background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
 
 .tabs{display:flex;gap:2px;background:var(--c-surface2);padding:4px;border-radius:var(--border-radius-md);margin-bottom:16px;}
 .tab{flex:1;padding:7px 0;text-align:center;border:none;background:transparent;cursor:pointer;border-radius:6px;font-size:13px;color:var(--c-text2);font-family:var(--font-sans);}
-.tab.active{background:var(--c-surface);color:var(--c-text);font-weight:500;border:0.5px solid var(--c-border);}
+.tab.active{background:var(--c-surface);color:var(--c-primary);font-weight:500;border:0.5px solid var(--c-border);box-shadow:0 2px 8px rgba(30, 127, 190, 0.1);}
 
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
-.stat-card{background:var(--c-surface2);border-radius:var(--border-radius-md);padding:12px 14px;}
+.stat-card{background:linear-gradient(135deg, rgba(30, 127, 190, 0.05) 0%, rgba(10, 159, 215, 0.05) 100%);border-radius:var(--border-radius-md);padding:12px 14px;border:0.5px solid rgba(30, 127, 190, 0.2);}
 .stat-label{font-size:12px;color:var(--c-text2);margin-bottom:4px;}
-.stat-val{font-size:20px;font-weight:500;}
+.stat-val{font-size:20px;font-weight:600;color:var(--c-primary);}
 
 .section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .section-title{font-size:14px;font-weight:500;flex:1;}
-.btn{padding:6px 14px;border:0.5px solid var(--c-border);background:var(--c-surface);border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;color:var(--c-text);font-family:var(--font-sans);}
+.btn{padding:6px 14px;border:0.5px solid var(--c-gray-light);background:var(--c-surface);border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;color:var(--c-text);font-family:var(--font-sans);}
 .btn:hover{background:var(--c-surface2);}
-.btn-primary{background:#1A4E8C;color:#fff;border-color:#1A4E8C;}
-.btn-primary:hover{background:#163f70;}
+.btn-primary{background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);color:#fff;border-color:var(--c-primary);font-weight:500;}
+.btn-primary:hover{background:linear-gradient(135deg, var(--c-primary-dark) 0%, var(--c-primary) 100%);transform:translateY(-1px);box-shadow:0 4px 12px rgba(30, 127, 190, 0.3);}
 .btn-sm{padding:4px 10px;font-size:12px;}
 .btn-danger{color:var(--c-danger);border-color:var(--c-border);}
 .btn-danger:hover{background:var(--c-danger-bg);}
 
 .search-row{display:flex;gap:8px;margin-bottom:12px;align-items:center;}
 .search-row input,.search-row select{flex:1;}
-select{padding:6px 10px;border:0.5px solid var(--c-border);border-radius:var(--border-radius-md);background:var(--c-surface);color:var(--c-text);font-size:13px;font-family:var(--font-sans);}
+select{padding:6px 10px;border:0.5px solid var(--c-gray-light);border-radius:var(--border-radius-md);background:var(--c-surface);color:var(--c-text);font-size:13px;font-family:var(--font-sans);}
+select:focus{outline:none;border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(30, 127, 190, 0.1);}
 
 .table-wrap{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;}
 table{width:100%;border-collapse:collapse;table-layout:fixed;}
-th{background:var(--c-surface2);font-weight:500;font-size:12px;color:var(--c-text2);padding:8px 10px;text-align:left;border-bottom:0.5px solid var(--c-border);}
+th{background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);font-weight:600;font-size:12px;color:#fff;padding:10px 12px;text-align:left;border-bottom:0.5px solid var(--c-border);}
 td{padding:8px 10px;font-size:13px;border-bottom:0.5px solid var(--c-border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:var(--c-surface2);}
+tr:hover td{background:rgba(30, 127, 190, 0.03);}
 
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
-.badge-blue{background:#E6F1FB;color:#0C447C;}
-.badge-amber{background:#FAEEDA;color:#633806;}
+.badge-blue{background:rgba(30, 127, 190, 0.15);color:var(--c-primary);}
+.badge-cyan{background:rgba(10, 159, 215, 0.15);color:var(--c-accent);}
+.badge-gray{background:var(--c-gray-light);color:var(--c-gray);}
 .badge-green{background:#EAF3DE;color:#27500A;}
-.badge-gray{background:var(--c-surface2);color:var(--c-text2);}
 
 .diff-up{color:#27500A;font-weight:500;}
 .diff-down{color:#A32D2D;font-weight:500;}
@@ -65,89 +71,91 @@ tr:hover td{background:var(--c-surface2);}
 
 .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding-top:40px;}
 .modal{background:var(--c-surface);border-radius:var(--border-radius-lg);border:0.5px solid var(--c-border);padding:20px;width:520px;max-width:100%;}
-.modal-title{font-size:15px;font-weight:500;margin-bottom:16px;}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:16px;color:var(--c-primary);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
-.form-group label{font-size:12px;color:var(--c-text2);}
-.form-group input,.form-group select,.form-group textarea{padding:7px 10px;border:0.5px solid var(--c-border);border-radius:var(--border-radius-md);font-size:13px;background:var(--c-surface);color:var(--c-text);font-family:var(--font-sans);}
+.form-group label{font-size:12px;color:var(--c-text2);font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{padding:7px 10px;border:0.5px solid var(--c-gray-light);border-radius:var(--border-radius-md);font-size:13px;background:var(--c-surface);color:var(--c-text);font-family:var(--font-sans);}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--c-primary);box-shadow:0 0 0 3px rgba(30, 127, 190, 0.1);}
 .form-group textarea{resize:vertical;min-height:60px;}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
 
-.compare-controls{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:14px;}
-.compare-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.compare-controls{background:linear-gradient(135deg, rgba(30, 127, 190, 0.08) 0%, rgba(10, 159, 215, 0.08) 100%);border:0.5px solid rgba(30, 127, 190, 0.2);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:14px;}
+.compare-title{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--c-primary);}
 .compare-selects{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 
 .price-row{display:grid;grid-template-columns:180px 1fr;gap:0;border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px;}
-.price-info{padding:12px 14px;background:var(--c-surface2);border-right:0.5px solid var(--c-border);}
-.price-info .name{font-weight:500;margin-bottom:3px;}
+.price-info{padding:12px 14px;background:linear-gradient(135deg, rgba(30, 127, 190, 0.05) 0%, rgba(10, 159, 215, 0.05) 100%);border-right:0.5px solid var(--c-border);}
+.price-info .name{font-weight:600;margin-bottom:3px;color:var(--c-primary);}
 .price-info .meta{font-size:11px;color:var(--c-text2);}
 .price-cols{display:flex;flex:1;}
 .price-col{flex:1;padding:8px 10px;border-right:0.5px solid var(--c-border);text-align:center;}
 .price-col:last-child{border-right:none;}
 .price-col-head{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
-.price-col-val{font-size:14px;font-weight:500;}
+.price-col-val{font-size:14px;font-weight:600;color:var(--c-primary);}
 .price-col-diff{font-size:11px;margin-top:2px;}
 
-.ai-panel{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-top:14px;}
+.ai-panel{border:0.5px solid rgba(30, 127, 190, 0.2);background:linear-gradient(135deg, rgba(30, 127, 190, 0.03) 0%, rgba(10, 159, 215, 0.03) 100%);border-radius:var(--border-radius-lg);padding:14px;margin-top:14px;}
 .ai-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.ai-dot{width:8px;height:8px;border-radius:50%;background:#1A4E8C;}
-.ai-title{font-size:13px;font-weight:500;}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--c-primary);}
+.ai-title{font-size:13px;font-weight:600;color:var(--c-primary);}
 .ai-output{font-size:13px;line-height:1.6;color:var(--c-text2);white-space:pre-wrap;}
 .ai-loading{display:flex;align-items:center;gap:8px;color:var(--c-text2);font-size:13px;}
-.spinner{width:14px;height:14px;border:2px solid var(--c-border);border-top-color:#1A4E8C;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+.spinner{width:14px;height:14px;border:2px solid var(--c-gray-light);border-top-color:var(--c-primary);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty{text-align:center;padding:32px;color:var(--c-text2);font-size:13px;}
-.highlight-min{background:#EAF3DE;}
-.highlight-max{background:#FCEBEB;}
+.highlight-min{background:rgba(39, 80, 10, 0.15);}
+.highlight-max{background:rgba(163, 45, 45, 0.15);}
 
 /* Report Dashboard Styles */
-.report-filters{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:flex-end;}
+.report-filters{background:linear-gradient(135deg, rgba(30, 127, 190, 0.08) 0%, rgba(10, 159, 215, 0.08) 100%);border:0.5px solid rgba(30, 127, 190, 0.2);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:flex-end;}
 .report-filters-full{grid-template-columns:1fr;}
 
 .vendor-dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px;}
-.vendor-card{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;overflow:hidden;}
-.vendor-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid var(--c-border);}
-.vendor-card-title{font-weight:500;font-size:14px;flex:1;}
+.vendor-card{background:var(--c-surface);border:0.5px solid rgba(30, 127, 190, 0.15);border-radius:var(--border-radius-lg);padding:14px;overflow:hidden;transition:all 0.3s ease;box-shadow:0 2px 8px rgba(30, 127, 190, 0.1);}
+.vendor-card:hover{transform:translateY(-4px);box-shadow:0 8px 16px rgba(30, 127, 190, 0.2);border-color:var(--c-primary);}
+.vendor-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(30, 127, 190, 0.15);}
+.vendor-card-title{font-weight:600;font-size:14px;flex:1;color:var(--c-primary);}
 .vendor-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.metric-mini{background:var(--c-surface);border-radius:6px;padding:8px;text-align:center;}
+.metric-mini{background:linear-gradient(135deg, rgba(30, 127, 190, 0.08) 0%, rgba(10, 159, 215, 0.08) 100%);border-radius:6px;padding:8px;text-align:center;border:0.5px solid rgba(30, 127, 190, 0.1);}
 .metric-mini-label{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
-.metric-mini-val{font-size:16px;font-weight:500;}
+.metric-mini-val{font-size:16px;font-weight:700;color:var(--c-primary);}
 
 .report-table{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:16px;}
 .report-table table{width:100%;}
-.report-table th{background:var(--c-primary);color:#fff;font-weight:600;padding:10px 12px;font-size:12px;}
+.report-table th{background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);color:#fff;font-weight:700;padding:12px 12px;font-size:12px;}
 .report-table td{padding:10px 12px;font-size:13px;border-bottom:0.5px solid var(--c-border);}
-.report-table tr:hover td{background:var(--c-surface2);}
+.report-table tr:hover td{background:rgba(30, 127, 190, 0.05);}
 .report-table tr:last-child td{border-bottom:none;}
 
-.chart-container{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;min-height:300px;display:flex;align-items:center;justify-content:center;}
+.chart-container{background:linear-gradient(135deg, rgba(30, 127, 190, 0.05) 0%, rgba(10, 159, 215, 0.05) 100%);border:0.5px solid rgba(30, 127, 190, 0.15);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;min-height:300px;display:flex;align-items:center;justify-content:center;}
 
-.price-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.price-bar-label{flex-shrink:0;width:120px;font-size:12px;color:var(--c-text2);}
-.price-bar-graph{flex:1;background:var(--c-surface);border-radius:4px;height:24px;position:relative;overflow:hidden;}
-.price-bar-fill{height:100%;background:linear-gradient(90deg,#1A4E8C,#E8A020);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;color:#fff;font-weight:500;}
-.price-bar-fill.low{background:#27500A;}
-.price-bar-fill.high{background:#A32D2D;}
+.price-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.price-bar-label{flex-shrink:0;width:140px;font-size:12px;color:var(--c-text2);font-weight:500;}
+.price-bar-graph{flex:1;background:var(--c-gray-light);border-radius:6px;height:28px;position:relative;overflow:hidden;}
+.price-bar-fill{height:100%;background:linear-gradient(90deg, var(--c-primary) 0%, var(--c-accent) 100%);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:11px;color:#fff;font-weight:700;}
+.price-bar-fill.low{background:linear-gradient(90deg, #27500A 0%, #4CAF50 100%);}
+.price-bar-fill.high{background:linear-gradient(90deg, #A32D2D 0%, #EF5350 100%);}
 
-.rank-badge{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--c-primary);color:#fff;text-align:center;line-height:28px;font-weight:600;font-size:12px;}
-.rank-badge.gold{background:#E8A020;}
-.rank-badge.silver{background:#888;}
-.rank-badge.bronze{background:#CD7F32;}
+.rank-badge{display:inline-block;width:32px;height:32px;border-radius:50%;background:var(--c-primary);color:#fff;text-align:center;line-height:32px;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(30, 127, 190, 0.3);}
+.rank-badge.gold{background:linear-gradient(135deg, #FFD700 0%, #FFA500 100%);box-shadow:0 4px 12px rgba(255, 165, 0, 0.3);}
+.rank-badge.silver{background:linear-gradient(135deg, #C0C0C0 0%, #808080 100%);box-shadow:0 4px 12px rgba(128, 128, 128, 0.3);}
+.rank-badge.bronze{background:linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);box-shadow:0 4px 12px rgba(139, 69, 19, 0.3);}
 
 .export-actions{display:flex;gap:8px;margin-bottom:16px;}
-.export-btn{padding:8px 16px;background:var(--c-primary);color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;font-weight:500;}
-.export-btn:hover{opacity:0.9;}
+.export-btn{padding:8px 16px;background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;font-weight:600;}
+.export-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(30, 127, 190, 0.3);}
 
-.report-summary{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;}
+.report-summary{background:linear-gradient(135deg, rgba(30, 127, 190, 0.08) 0%, rgba(10, 159, 215, 0.08) 100%);border:0.5px solid rgba(30, 127, 190, 0.2);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;}
 .summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.summary-item{text-align:center;}
-.summary-label{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
-.summary-val{font-size:18px;font-weight:600;color:var(--c-primary);}
+.summary-item{text-align:center;padding:12px;background:var(--c-surface);border-radius:8px;border:0.5px solid rgba(30, 127, 190, 0.1);}
+.summary-label{font-size:11px;color:var(--c-text2);margin-bottom:6px;font-weight:500;}
+.summary-val{font-size:20px;font-weight:700;color:var(--c-primary);}
 </style>
 
 <div id="app">
   <div class="topbar">
-    <i class="ti ti-building-warehouse" style="font-size:20px;color:#1A4E8C;" aria-hidden="true"></i>
+    <i class="ti ti-building-warehouse" style="font-size:20px;background:linear-gradient(135deg, #1E7FBE 0%, #0A9FD7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" aria-hidden="true"></i>
     <span class="topbar-title">Thư viện giá vật tư / thiết bị</span>
     <span class="topbar-badge" id="total-badge">0 vật tư</span>
   </div>
@@ -339,7 +347,6 @@ function populateFilters(){
   const cp=document.getElementById('cmp-project');
   cp.innerHTML='<option value="">Tất cả dự án</option>'+db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   
-  // Report filters
   const rp=document.getElementById('report-project');
   rp.innerHTML='<option value="">Tất cả dự án</option>'+db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
   const rc=document.getElementById('report-category');
@@ -362,9 +369,9 @@ function renderLibrary(){
     const prices=db.prices.filter(p=>p.itemId===item.id);
     const avg=k=>prices.length?Math.round(prices.reduce((s,p)=>s+(p[k]||0),0)/prices.length):null;
     const dt=avg('du_thau'),ncc=avg('ncc'),ktt=avg('ky_thuc_te');
-    const catColor={'Điện':'badge-blue','Cơ khí':'badge-amber','Kết cấu':'badge-gray','Hoàn thiện':'badge-green','Vật liệu xây dựng':'badge-gray'}[item.category]||'badge-gray';
+    const catColor={'Điện':'badge-blue','Cơ khí':'badge-cyan','Kết cấu':'badge-gray','Hoàn thiện':'badge-green','Vật liệu xây dựng':'badge-gray'}[item.category]||'badge-gray';
     return `<tr>
-      <td style="font-family:var(--font-mono);font-size:12px;">${item.id}</td>
+      <td style="font-family:var(--font-mono);font-size:12px;font-weight:600;">${item.id}</td>
       <td style="font-weight:500;">${item.name}</td>
       <td><span class="badge badge-gray">${item.unit}</span></td>
       <td><span class="badge ${catColor}">${item.category}</span></td>
@@ -381,7 +388,7 @@ function renderProjects(){
   body.innerHTML=db.projects.map(p=>{
     const cnt=db.prices.filter(x=>x.projectId===p.id).length;
     return `<tr>
-      <td style="font-family:var(--font-mono);font-size:12px;">${p.id}</td>
+      <td style="font-family:var(--font-mono);font-size:12px;font-weight:600;">${p.id}</td>
       <td style="font-weight:500;">${p.name}</td>
       <td style="color:var(--c-text2);">${p.client}</td>
       <td>${p.year}</td>
@@ -412,14 +419,14 @@ function runCompare(){
 
   let html=`<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
     <span style="font-weight:500;font-size:14px;">${item.name}</span>
-    <span class="badge badge-gray">${item.unit}</span>
+    <span class="badge badge-cyan">${item.unit}</span>
     <span class="badge badge-blue">${prices.length} dự án</span>
   </div>`;
 
   if(type==='all'){
     html+=`<div style="display:grid;grid-template-columns:180px repeat(3,1fr);gap:0;border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:8px;">
-      <div style="background:var(--c-surface2);padding:8px 12px;font-size:12px;font-weight:500;color:var(--c-text2);border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">Dự án</div>
-      ${types_.map(t=>`<div style="background:var(--c-surface2);padding:8px 10px;font-size:12px;font-weight:500;color:var(--c-text2);text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">${labels[t]}</div>`).join('')}
+      <div style="background:linear-gradient(135deg, rgba(30, 127, 190, 0.1) 0%, rgba(10, 159, 215, 0.1) 100%);padding:8px 12px;font-size:12px;font-weight:600;color:var(--c-primary);border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">Dự án</div>
+      ${types_.map(t=>`<div style="background:linear-gradient(135deg, rgba(30, 127, 190, 0.1) 0%, rgba(10, 159, 215, 0.1) 100%);padding:8px 10px;font-size:12px;font-weight:600;color:var(--c-primary);text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">${labels[t]}</div>`).join('')}
     `;
     prices.forEach(p=>{
       const proj=db.projects.find(x=>x.id===p.projectId)||{name:p.projectId};
@@ -427,13 +434,13 @@ function runCompare(){
       types_.forEach(t=>{
         const v=p[t];
         const isMin=v===minV,isMax=v===maxV;
-        html+=`<div style="padding:8px 10px;text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);${isMin?'background:#EAF3DE;':isMax?'background:#FCEBEB;':''}">${v?fmt(v):'—'}${t!=='du_thau'&&p.du_thau&&v?'<div style="font-size:11px;margin-top:2px;">'+fmtDiff(p.du_thau,v)+'</div>':''}</div>`;
+        html+=`<div style="padding:8px 10px;text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);${isMin?'background:rgba(39, 80, 10, 0.15);':isMax?'background:rgba(163, 45, 45, 0.15);':''}">${v?fmt(v):'—'}${t!=='du_thau'&&p.du_thau&&v?'<div style="font-size:11px;margin-top:2px;">'+fmtDiff(p.du_thau,v)+'</div>':''}</div>`;
       });
     });
     html+=`</div>`;
     html+=`<div style="display:flex;gap:16px;font-size:12px;color:var(--c-text2);margin-bottom:8px;">
-      <span><span style="display:inline-block;width:10px;height:10px;background:#EAF3DE;border-radius:2px;margin-right:4px;"></span>Giá thấp nhất</span>
-      <span><span style="display:inline-block;width:10px;height:10px;background:#FCEBEB;border-radius:2px;margin-right:4px;"></span>Giá cao nhất</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:rgba(39, 80, 10, 0.15);border-radius:2px;margin-right:4px;"></span>Giá thấp nhất</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:rgba(163, 45, 45, 0.15);border-radius:2px;margin-right:4px;"></span>Giá cao nhất</span>
       <span>▲/▼ % so với giá dự thầu</span>
     </div>`;
   }
@@ -480,14 +487,6 @@ function renderReport(){
   let filteredPrices=db.prices;
   if(projId)filteredPrices=filteredPrices.filter(p=>p.projectId===projId);
 
-  const vendors={};
-  filteredPrices.forEach(p=>{
-    if(!filteredItems.find(i=>i.id===p.itemId))return;
-    const key=priceType;
-    const val=p[key]||0;
-    if(!vendors[key])vendors[key]={total:0,count:0,minVal:Infinity,maxVal:0,avgVal:0,items:[]};
-  });
-
   let vendorData=[];
   filteredPrices.forEach(p=>{
     if(!filteredItems.find(i=>i.id===p.itemId))return;
@@ -512,7 +511,6 @@ function renderReport(){
     return;
   }
 
-  // Tính thống kê theo loại giá
   const stats={
     totalItems:new Set(vendorData.map(v=>v.itemId)).size,
     totalProjects:new Set(vendorData.map(v=>v.projectId)).size,
@@ -546,9 +544,8 @@ function renderReport(){
     </div>
   </div>`;
 
-  // Biểu đồ thanh so sánh giá
-  html+=`<div style="background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;">
-    <div style="font-weight:500;margin-bottom:12px;">So sánh giá theo vật tư</div>`;
+  html+=`<div style="background:linear-gradient(135deg, rgba(30, 127, 190, 0.05) 0%, rgba(10, 159, 215, 0.05) 100%);border:0.5px solid rgba(30, 127, 190, 0.15);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;">
+    <div style="font-weight:600;margin-bottom:12px;color:var(--c-primary);">So sánh giá theo vật tư</div>`;
   
   const itemSummary={};
   vendorData.forEach(v=>{
@@ -561,7 +558,6 @@ function renderReport(){
 
   Object.entries(itemSummary).slice(0,8).forEach(([id,item])=>{
     const avg=Math.round(item.total/item.count);
-    const range=item.max-item.min;
     const pct=(item.min/stats.maxValue)*100;
     html+=`<div class="price-bar">
       <div class="price-bar-label">${item.name.substring(0,20)}...</div>
@@ -576,7 +572,6 @@ function renderReport(){
   });
   html+=`</div>`;
 
-  // Bảng chi tiết
   html+=`
   <div class="report-table">
     <table>
@@ -587,7 +582,7 @@ function renderReport(){
           <th style="text-align:center;">Giá dự thầu</th>
           <th style="text-align:center;">Giá NCC chào</th>
           <th style="text-align:center;">Giá ký thực tế</th>
-          <th style="text-align:center;background:#E8A020;color:#fff;">${priceTypeLabel}</th>
+          <th style="text-align:center;background:linear-gradient(135deg, var(--c-primary) 0%, var(--c-accent) 100%);">${priceTypeLabel}</th>
           <th style="text-align:center;">% vs DT</th>
         </tr>
       </thead>
@@ -601,8 +596,8 @@ function renderReport(){
       <td style="text-align:right;">${fmt(v.du_thau)}</td>
       <td style="text-align:right;">${fmt(v.ncc)}</td>
       <td style="text-align:right;">${fmt(v.ky_thuc_te)}</td>
-      <td style="text-align:right;font-weight:500;${highlightClass?'background:'+highlightClass+';':'background:#E8A020;color:#fff;'}">${fmt(v.priceVal)}</td>
-      <td style="text-align:center;${v.diff>0?'color:#A32D2D;':'color:#27500A;'}font-weight:500;">${v.diff>0?'▲':'▼'}${Math.abs(Math.round(v.diff))}%</td>
+      <td style="text-align:right;font-weight:600;${highlightClass?'background:'+highlightClass+';':'background:linear-gradient(135deg, rgba(30, 127, 190, 0.1) 0%, rgba(10, 159, 215, 0.1) 100%);color:var(--c-primary);'}">${fmt(v.priceVal)}</td>
+      <td style="text-align:center;${v.diff>0?'color:#A32D2D;':'color:#27500A;'}font-weight:600;">${v.diff>0?'▲':'▼'}${Math.abs(Math.round(v.diff))}%</td>
     </tr>`;
   });
   
@@ -610,7 +605,6 @@ function renderReport(){
     </table>
   </div>`;
 
-  // Hạng NCC (giả định)
   html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
   const vendorRanking=[
     {name:'NCC A - Giá cạnh tranh',score:85,items:Math.floor(vendorData.length*0.4),rank:1},
@@ -696,8 +690,8 @@ function openAddItem(){
   </div>
   <div class="form-group" style="margin-bottom:10px;"><label>Tên vật tư / thiết bị</label><input id="f-name" placeholder="Nhập tên đầy đủ..." /></div>
   <div class="form-group" style="margin-bottom:10px;"><label>Loại / danh mục</label><input id="f-cat" list="cat-list" placeholder="Điện, Cơ khí..." /><datalist id="cat-list">${cats.map(c=>`<option>${c}</option>`).join('')}</datalist></div>
-  <div style="background:var(--c-surface2);border-radius:var(--border-radius-md);padding:12px;margin-bottom:10px;">
-    <div style="font-size:12px;font-weight:500;margin-bottom:8px;">Nhập giá cho dự án (tuỳ chọn)</div>
+  <div style="background:linear-gradient(135deg, rgba(30, 127, 190, 0.08) 0%, rgba(10, 159, 215, 0.08) 100%);border-radius:var(--border-radius-md);padding:12px;margin-bottom:10px;border:0.5px solid rgba(30, 127, 190, 0.1);">
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--c-primary);">Nhập giá cho dự án (tuỳ chọn)</div>
     <div class="form-group" style="margin-bottom:8px;"><label>Dự án</label><select id="f-proj"><option value="">-- Không nhập giá --</option>${db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select></div>
     <div class="form-row">
       <div class="form-group"><label>Giá dự thầu</label><input id="f-dt" type="number" placeholder="0" /></div>
