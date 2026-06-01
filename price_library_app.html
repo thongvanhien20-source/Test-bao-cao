@@ -1,0 +1,776 @@
+<h2 class="sr-only">Ứng dụng thư viện giá vật tư thiết bị - quản lý và so sánh giá theo dự án</h2>
+<style>
+:root {
+  --c-primary: #1A4E8C;
+  --c-accent: #E8A020;
+  --c-surface: var(--color-background-primary);
+  --c-surface2: var(--color-background-secondary);
+  --c-border: var(--color-border-tertiary);
+  --c-text: var(--color-text-primary);
+  --c-text2: var(--color-text-secondary);
+  --c-success-bg: var(--color-background-success);
+  --c-success: var(--color-text-success);
+  --c-warn-bg: var(--color-background-warning);
+  --c-warn: var(--color-text-warning);
+  --c-danger-bg: var(--color-background-danger);
+  --c-danger: var(--color-text-danger);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);color:var(--c-text);font-size:14px;}
+#app{padding:0 0 2rem;}
+
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 0 12px;border-bottom:0.5px solid var(--c-border);margin-bottom:16px;}
+.topbar-title{font-size:17px;font-weight:500;flex:1;}
+.topbar-badge{background:#1A4E8C;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+
+.tabs{display:flex;gap:2px;background:var(--c-surface2);padding:4px;border-radius:var(--border-radius-md);margin-bottom:16px;}
+.tab{flex:1;padding:7px 0;text-align:center;border:none;background:transparent;cursor:pointer;border-radius:6px;font-size:13px;color:var(--c-text2);font-family:var(--font-sans);}
+.tab.active{background:var(--c-surface);color:var(--c-text);font-weight:500;border:0.5px solid var(--c-border);}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--c-surface2);border-radius:var(--border-radius-md);padding:12px 14px;}
+.stat-label{font-size:12px;color:var(--c-text2);margin-bottom:4px;}
+.stat-val{font-size:20px;font-weight:500;}
+
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.section-title{font-size:14px;font-weight:500;flex:1;}
+.btn{padding:6px 14px;border:0.5px solid var(--c-border);background:var(--c-surface);border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;color:var(--c-text);font-family:var(--font-sans);}
+.btn:hover{background:var(--c-surface2);}
+.btn-primary{background:#1A4E8C;color:#fff;border-color:#1A4E8C;}
+.btn-primary:hover{background:#163f70;}
+.btn-sm{padding:4px 10px;font-size:12px;}
+.btn-danger{color:var(--c-danger);border-color:var(--c-border);}
+.btn-danger:hover{background:var(--c-danger-bg);}
+
+.search-row{display:flex;gap:8px;margin-bottom:12px;align-items:center;}
+.search-row input,.search-row select{flex:1;}
+select{padding:6px 10px;border:0.5px solid var(--c-border);border-radius:var(--border-radius-md);background:var(--c-surface);color:var(--c-text);font-size:13px;font-family:var(--font-sans);}
+
+.table-wrap{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;}
+th{background:var(--c-surface2);font-weight:500;font-size:12px;color:var(--c-text2);padding:8px 10px;text-align:left;border-bottom:0.5px solid var(--c-border);}
+td{padding:8px 10px;font-size:13px;border-bottom:0.5px solid var(--c-border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--c-surface2);}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-blue{background:#E6F1FB;color:#0C447C;}
+.badge-amber{background:#FAEEDA;color:#633806;}
+.badge-green{background:#EAF3DE;color:#27500A;}
+.badge-gray{background:var(--c-surface2);color:var(--c-text2);}
+
+.diff-up{color:#27500A;font-weight:500;}
+.diff-down{color:#A32D2D;font-weight:500;}
+.diff-eq{color:var(--c-text2);}
+
+.modal-bg{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding-top:40px;}
+.modal{background:var(--c-surface);border-radius:var(--border-radius-lg);border:0.5px solid var(--c-border);padding:20px;width:520px;max-width:100%;}
+.modal-title{font-size:15px;font-weight:500;margin-bottom:16px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group label{font-size:12px;color:var(--c-text2);}
+.form-group input,.form-group select,.form-group textarea{padding:7px 10px;border:0.5px solid var(--c-border);border-radius:var(--border-radius-md);font-size:13px;background:var(--c-surface);color:var(--c-text);font-family:var(--font-sans);}
+.form-group textarea{resize:vertical;min-height:60px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+.compare-controls{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:14px;}
+.compare-title{font-size:13px;font-weight:500;margin-bottom:10px;}
+.compare-selects{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+.price-row{display:grid;grid-template-columns:180px 1fr;gap:0;border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px;}
+.price-info{padding:12px 14px;background:var(--c-surface2);border-right:0.5px solid var(--c-border);}
+.price-info .name{font-weight:500;margin-bottom:3px;}
+.price-info .meta{font-size:11px;color:var(--c-text2);}
+.price-cols{display:flex;flex:1;}
+.price-col{flex:1;padding:8px 10px;border-right:0.5px solid var(--c-border);text-align:center;}
+.price-col:last-child{border-right:none;}
+.price-col-head{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
+.price-col-val{font-size:14px;font-weight:500;}
+.price-col-diff{font-size:11px;margin-top:2px;}
+
+.ai-panel{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-top:14px;}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:#1A4E8C;}
+.ai-title{font-size:13px;font-weight:500;}
+.ai-output{font-size:13px;line-height:1.6;color:var(--c-text2);white-space:pre-wrap;}
+.ai-loading{display:flex;align-items:center;gap:8px;color:var(--c-text2);font-size:13px;}
+.spinner{width:14px;height:14px;border:2px solid var(--c-border);border-top-color:#1A4E8C;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:32px;color:var(--c-text2);font-size:13px;}
+.highlight-min{background:#EAF3DE;}
+.highlight-max{background:#FCEBEB;}
+
+/* Report Dashboard Styles */
+.report-filters{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:flex-end;}
+.report-filters-full{grid-template-columns:1fr;}
+
+.vendor-dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px;}
+.vendor-card{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;overflow:hidden;}
+.vendor-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid var(--c-border);}
+.vendor-card-title{font-weight:500;font-size:14px;flex:1;}
+.vendor-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.metric-mini{background:var(--c-surface);border-radius:6px;padding:8px;text-align:center;}
+.metric-mini-label{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
+.metric-mini-val{font-size:16px;font-weight:500;}
+
+.report-table{border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:16px;}
+.report-table table{width:100%;}
+.report-table th{background:var(--c-primary);color:#fff;font-weight:600;padding:10px 12px;font-size:12px;}
+.report-table td{padding:10px 12px;font-size:13px;border-bottom:0.5px solid var(--c-border);}
+.report-table tr:hover td{background:var(--c-surface2);}
+.report-table tr:last-child td{border-bottom:none;}
+
+.chart-container{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;min-height:300px;display:flex;align-items:center;justify-content:center;}
+
+.price-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.price-bar-label{flex-shrink:0;width:120px;font-size:12px;color:var(--c-text2);}
+.price-bar-graph{flex:1;background:var(--c-surface);border-radius:4px;height:24px;position:relative;overflow:hidden;}
+.price-bar-fill{height:100%;background:linear-gradient(90deg,#1A4E8C,#E8A020);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;color:#fff;font-weight:500;}
+.price-bar-fill.low{background:#27500A;}
+.price-bar-fill.high{background:#A32D2D;}
+
+.rank-badge{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--c-primary);color:#fff;text-align:center;line-height:28px;font-weight:600;font-size:12px;}
+.rank-badge.gold{background:#E8A020;}
+.rank-badge.silver{background:#888;}
+.rank-badge.bronze{background:#CD7F32;}
+
+.export-actions{display:flex;gap:8px;margin-bottom:16px;}
+.export-btn{padding:8px 16px;background:var(--c-primary);color:#fff;border:none;border-radius:var(--border-radius-md);cursor:pointer;font-size:13px;font-weight:500;}
+.export-btn:hover{opacity:0.9;}
+
+.report-summary{background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;}
+.summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.summary-item{text-align:center;}
+.summary-label{font-size:11px;color:var(--c-text2);margin-bottom:4px;}
+.summary-val{font-size:18px;font-weight:600;color:var(--c-primary);}
+</style>
+
+<div id="app">
+  <div class="topbar">
+    <i class="ti ti-building-warehouse" style="font-size:20px;color:#1A4E8C;" aria-hidden="true"></i>
+    <span class="topbar-title">Thư viện giá vật tư / thiết bị</span>
+    <span class="topbar-badge" id="total-badge">0 vật tư</span>
+  </div>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-label">Tổng vật tư</div><div class="stat-val" id="s-total">0</div></div>
+    <div class="stat-card"><div class="stat-label">Số dự án</div><div class="stat-val" id="s-projects">0</div></div>
+    <div class="stat-card"><div class="stat-label">Loại vật tư</div><div class="stat-val" id="s-cats">0</div></div>
+    <div class="stat-card"><div class="stat-label">Mục nhập giá</div><div class="stat-val" id="s-entries">0</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('library')"><i class="ti ti-books" aria-hidden="true"></i> Thư viện giá</button>
+    <button class="tab" onclick="switchTab('compare')"><i class="ti ti-chart-bar" aria-hidden="true"></i> So sánh giá</button>
+    <button class="tab" onclick="switchTab('projects')"><i class="ti ti-briefcase" aria-hidden="true"></i> Dự án</button>
+    <button class="tab" onclick="switchTab('report')"><i class="ti ti-report" aria-hidden="true"></i> Báo cáo NCC</button>
+  </div>
+
+  <div id="tab-library">
+    <div class="section-head">
+      <span class="section-title">Danh mục vật tư / thiết bị</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddItem()"><i class="ti ti-plus" aria-hidden="true"></i> Thêm vật tư</button>
+    </div>
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="Tìm kiếm vật tư, mã hàng..." oninput="renderLibrary()" />
+      <select id="filter-cat" onchange="renderLibrary()"><option value="">Tất cả loại</option></select>
+      <select id="filter-unit" onchange="renderLibrary()"><option value="">Tất cả đơn vị</option></select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <colgroup><col style="width:18%"><col style="width:24%"><col style="width:10%"><col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:12%"></colgroup>
+        <thead>
+          <tr>
+            <th>Mã hàng</th><th>Tên vật tư / thiết bị</th><th>Đơn vị</th><th>Loại</th>
+            <th>Giá dự thầu</th><th>Giá NCC chào</th><th>Giá ký thực tế</th>
+          </tr>
+        </thead>
+        <tbody id="library-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-compare" style="display:none">
+    <div class="compare-controls">
+      <div class="compare-title"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i> Chọn tiêu chí so sánh</div>
+      <div class="compare-selects">
+        <div class="form-group">
+          <label>Vật tư / thiết bị</label>
+          <select id="cmp-item" onchange="runCompare()"><option value="">-- Chọn vật tư --</option></select>
+        </div>
+        <div class="form-group">
+          <label>Dự án (để trống = tất cả)</label>
+          <select id="cmp-project" onchange="runCompare()"><option value="">Tất cả dự án</option></select>
+        </div>
+        <div class="form-group">
+          <label>Loại giá hiển thị</label>
+          <select id="cmp-type" onchange="runCompare()">
+            <option value="all">Cả 3 loại giá</option>
+            <option value="du_thau">Giá dự thầu</option>
+            <option value="ncc">Giá NCC chào</option>
+            <option value="ky_thuc_te">Giá ký thực tế</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="compare-result"><div class="empty">Chọn vật tư để xem so sánh giá theo dự án</div></div>
+    <div class="ai-panel" id="ai-panel" style="display:none">
+      <div class="ai-header"><div class="ai-dot"></div><span class="ai-title">Phân tích AI</span><button class="btn btn-sm" onclick="runAI()" style="margin-left:auto;">Phân tích ↗</button></div>
+      <div id="ai-output" class="ai-output"></div>
+    </div>
+  </div>
+
+  <div id="tab-projects" style="display:none">
+    <div class="section-head">
+      <span class="section-title">Danh sách dự án</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddProject()"><i class="ti ti-plus" aria-hidden="true"></i> Thêm dự án</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <colgroup><col style="width:18%"><col style="width:32%"><col style="width:18%"><col style="width:16%"><col style="width:16%"></colgroup>
+        <thead><tr><th>Mã dự án</th><th>Tên dự án</th><th>Chủ đầu tư</th><th>Năm</th><th>Thao tác</th></tr></thead>
+        <tbody id="projects-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-report" style="display:none">
+    <div class="section-head">
+      <span class="section-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Báo cáo so sánh nhà cung cấp</span>
+      <div style="flex:1;"></div>
+      <button class="btn btn-primary btn-sm" onclick="exportReportCSV()"><i class="ti ti-file-type-csv" aria-hidden="true"></i> Xuất CSV</button>
+    </div>
+
+    <div class="report-filters">
+      <div class="form-group">
+        <label>Chọn dự án</label>
+        <select id="report-project" onchange="renderReport()"><option value="">Tất cả dự án</option></select>
+      </div>
+      <div class="form-group">
+        <label>Chọn loại vật tư</label>
+        <select id="report-category" onchange="renderReport()"><option value="">Tất cả loại</option></select>
+      </div>
+      <div class="form-group">
+        <label>Loại giá hiển thị</label>
+        <select id="report-type" onchange="renderReport()">
+          <option value="ncc">Giá NCC chào</option>
+          <option value="ky_thuc_te">Giá ký thực tế</option>
+          <option value="du_thau">Giá dự thầu</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="report-content">
+      <div class="empty">Chọn bộ lọc để xem báo cáo</div>
+    </div>
+  </div>
+
+  <div id="modal-overlay" style="display:none;position:absolute;inset:0;min-height:600px;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:flex-start;justify-content:center;padding-top:30px;">
+    <div class="modal" id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+let db = {
+  items: [],
+  projects: [],
+  prices: []
+};
+
+function seed() {
+  db.projects = [
+    {id:'DA001',name:'Kho lạnh Bình Dương',client:'Công ty CP Thực phẩm ABC',year:'2023'},
+    {id:'DA002',name:'Nhà xưởng Đồng Nai',client:'Tập đoàn XYZ',year:'2023'},
+    {id:'DA003',name:'Trung tâm thương mại Q7',client:'Địa ốc DEF',year:'2024'},
+    {id:'DA004',name:'Khu công nghiệp Long An',client:'BQL KCN Long An',year:'2024'},
+  ];
+  db.items = [
+    {id:'VT001',name:'Cáp điện 3x10mm² CU/PVC/PVC',unit:'m',category:'Điện'},
+    {id:'VT002',name:'Tủ điện ATS 400A',unit:'bộ',category:'Điện'},
+    {id:'VT003',name:'Ống thép luồn dây Ø25',unit:'m',category:'Điện'},
+    {id:'VT004',name:'Van cầu PN16 DN50',unit:'cái',category:'Cơ khí'},
+    {id:'VT005',name:'Máy bơm ly tâm 7.5kW',unit:'bộ',category:'Cơ khí'},
+    {id:'VT006',name:'Thép hộp 50x50x3mm',unit:'m',category:'Kết cấu'},
+    {id:'VT007',name:'Sơn epoxy nền 2 thành phần',unit:'lít',category:'Hoàn thiện'},
+    {id:'VT008',name:'Cát vàng xây dựng',unit:'m³',category:'Vật liệu xây dựng'},
+  ];
+  db.prices = [
+    {itemId:'VT001',projectId:'DA001',du_thau:125000,ncc:118000,ky_thuc_te:120000},
+    {itemId:'VT001',projectId:'DA002',du_thau:128000,ncc:121000,ky_thuc_te:123500},
+    {itemId:'VT001',projectId:'DA003',du_thau:132000,ncc:124000,ky_thuc_te:126000},
+    {itemId:'VT001',projectId:'DA004',du_thau:130000,ncc:119500,ky_thuc_te:122000},
+    {itemId:'VT002',projectId:'DA001',du_thau:8500000,ncc:7800000,ky_thuc_te:8100000},
+    {itemId:'VT002',projectId:'DA002',du_thau:8800000,ncc:8200000,ky_thuc_te:8400000},
+    {itemId:'VT002',projectId:'DA003',du_thau:9200000,ncc:8500000,ky_thuc_te:8750000},
+    {itemId:'VT003',projectId:'DA001',du_thau:42000,ncc:38500,ky_thuc_te:39800},
+    {itemId:'VT003',projectId:'DA002',du_thau:45000,ncc:41000,ky_thuc_te:42500},
+    {itemId:'VT004',projectId:'DA001',du_thau:680000,ncc:620000,ky_thuc_te:645000},
+    {itemId:'VT004',projectId:'DA003',du_thau:720000,ncc:660000,ky_thuc_te:685000},
+    {itemId:'VT005',projectId:'DA002',du_thau:18500000,ncc:17200000,ky_thuc_te:17800000},
+    {itemId:'VT005',projectId:'DA004',du_thau:19000000,ncc:17800000,ky_thuc_te:18300000},
+    {itemId:'VT006',projectId:'DA001',du_thau:85000,ncc:78000,ky_thuc_te:81000},
+    {itemId:'VT006',projectId:'DA002',du_thau:88000,ncc:80500,ky_thuc_te:83500},
+    {itemId:'VT007',projectId:'DA003',du_thau:145000,ncc:132000,ky_thuc_te:138000},
+    {itemId:'VT008',projectId:'DA004',du_thau:320000,ncc:295000,ky_thuc_te:308000},
+  ];
+}
+
+function fmt(n){if(!n&&n!==0)return'—';return new Intl.NumberFormat('vi-VN').format(Math.round(n));}
+function fmtDiff(base,val){if(!base||!val)return'';const d=Math.round((val-base)/base*100);if(d===0)return'';return d>0?`<span class="diff-down">▲${d}%</span>`:`<span class="diff-up">▼${Math.abs(d)}%</span>`;}
+
+function updateStats(){
+  const cats=new Set(db.items.map(i=>i.category));
+  document.getElementById('s-total').textContent=db.items.length;
+  document.getElementById('s-projects').textContent=db.projects.length;
+  document.getElementById('s-cats').textContent=cats.size;
+  document.getElementById('s-entries').textContent=db.prices.length;
+  document.getElementById('total-badge').textContent=db.items.length+' vật tư';
+}
+
+function populateFilters(){
+  const cats=[...new Set(db.items.map(i=>i.category))].sort();
+  const units=[...new Set(db.items.map(i=>i.unit))].sort();
+  const fc=document.getElementById('filter-cat');
+  const fu=document.getElementById('filter-unit');
+  fc.innerHTML='<option value="">Tất cả loại</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+  fu.innerHTML='<option value="">Tất cả đơn vị</option>'+units.map(u=>`<option>${u}</option>`).join('');
+  const ci=document.getElementById('cmp-item');
+  ci.innerHTML='<option value="">-- Chọn vật tư --</option>'+db.items.map(i=>`<option value="${i.id}">${i.name} (${i.unit})</option>`).join('');
+  const cp=document.getElementById('cmp-project');
+  cp.innerHTML='<option value="">Tất cả dự án</option>'+db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  
+  // Report filters
+  const rp=document.getElementById('report-project');
+  rp.innerHTML='<option value="">Tất cả dự án</option>'+db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const rc=document.getElementById('report-category');
+  rc.innerHTML='<option value="">Tất cả loại</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+}
+
+function renderLibrary(){
+  const q=(document.getElementById('search-input').value||'').toLowerCase();
+  const cat=document.getElementById('filter-cat').value;
+  const unit=document.getElementById('filter-unit').value;
+  const body=document.getElementById('library-body');
+  let items=db.items.filter(i=>{
+    if(q&&!i.name.toLowerCase().includes(q)&&!i.id.toLowerCase().includes(q))return false;
+    if(cat&&i.category!==cat)return false;
+    if(unit&&i.unit!==unit)return false;
+    return true;
+  });
+  if(!items.length){body.innerHTML=`<tr><td colspan="7"><div class="empty">Không có vật tư nào</div></td></tr>`;return;}
+  body.innerHTML=items.map(item=>{
+    const prices=db.prices.filter(p=>p.itemId===item.id);
+    const avg=k=>prices.length?Math.round(prices.reduce((s,p)=>s+(p[k]||0),0)/prices.length):null;
+    const dt=avg('du_thau'),ncc=avg('ncc'),ktt=avg('ky_thuc_te');
+    const catColor={'Điện':'badge-blue','Cơ khí':'badge-amber','Kết cấu':'badge-gray','Hoàn thiện':'badge-green','Vật liệu xây dựng':'badge-gray'}[item.category]||'badge-gray';
+    return `<tr>
+      <td style="font-family:var(--font-mono);font-size:12px;">${item.id}</td>
+      <td style="font-weight:500;">${item.name}</td>
+      <td><span class="badge badge-gray">${item.unit}</span></td>
+      <td><span class="badge ${catColor}">${item.category}</span></td>
+      <td>${dt?fmt(dt)+'<br><span style="font-size:11px;color:var(--c-text2);">TB ${prices.length} DA</span>':'<span style="color:var(--c-text2)">—</span>'}</td>
+      <td>${ncc?fmt(ncc)+(dt?'<br>'+fmtDiff(dt,ncc):''):'<span style="color:var(--c-text2)">—</span>'}</td>
+      <td>${ktt?fmt(ktt)+(dt?'<br>'+fmtDiff(dt,ktt):''):'<span style="color:var(--c-text2)">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderProjects(){
+  const body=document.getElementById('projects-body');
+  if(!db.projects.length){body.innerHTML=`<tr><td colspan="5"><div class="empty">Chưa có dự án nào</div></td></tr>`;return;}
+  body.innerHTML=db.projects.map(p=>{
+    const cnt=db.prices.filter(x=>x.projectId===p.id).length;
+    return `<tr>
+      <td style="font-family:var(--font-mono);font-size:12px;">${p.id}</td>
+      <td style="font-weight:500;">${p.name}</td>
+      <td style="color:var(--c-text2);">${p.client}</td>
+      <td>${p.year}</td>
+      <td><span class="badge badge-blue">${cnt} mục giá</span> <button class="btn btn-sm btn-danger" onclick="deleteProject('${p.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+function runCompare(){
+  const itemId=document.getElementById('cmp-item').value;
+  const projId=document.getElementById('cmp-project').value;
+  const type=document.getElementById('cmp-type').value;
+  const result=document.getElementById('compare-result');
+  const aiPanel=document.getElementById('ai-panel');
+  if(!itemId){result.innerHTML='<div class="empty">Chọn vật tư để xem so sánh giá theo dự án</div>';aiPanel.style.display='none';return;}
+  const item=db.items.find(i=>i.id===itemId);
+  let prices=db.prices.filter(p=>p.itemId===itemId);
+  if(projId)prices=prices.filter(p=>p.projectId===projId);
+  if(!prices.length){result.innerHTML='<div class="empty">Chưa có dữ liệu giá cho vật tư này</div>';aiPanel.style.display='none';return;}
+  aiPanel.style.display='block';
+  document.getElementById('ai-output').textContent='';
+
+  const types_=type==='all'?['du_thau','ncc','ky_thuc_te']:[type];
+  const labels={'du_thau':'Giá dự thầu','ncc':'Giá NCC chào','ky_thuc_te':'Giá ký thực tế'};
+
+  const allVals=prices.flatMap(p=>types_.map(t=>p[t]||0)).filter(v=>v>0);
+  const minV=Math.min(...allVals),maxV=Math.max(...allVals);
+
+  let html=`<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <span style="font-weight:500;font-size:14px;">${item.name}</span>
+    <span class="badge badge-gray">${item.unit}</span>
+    <span class="badge badge-blue">${prices.length} dự án</span>
+  </div>`;
+
+  if(type==='all'){
+    html+=`<div style="display:grid;grid-template-columns:180px repeat(3,1fr);gap:0;border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:8px;">
+      <div style="background:var(--c-surface2);padding:8px 12px;font-size:12px;font-weight:500;color:var(--c-text2);border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">Dự án</div>
+      ${types_.map(t=>`<div style="background:var(--c-surface2);padding:8px 10px;font-size:12px;font-weight:500;color:var(--c-text2);text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">${labels[t]}</div>`).join('')}
+    `;
+    prices.forEach(p=>{
+      const proj=db.projects.find(x=>x.id===p.projectId)||{name:p.projectId};
+      html+=`<div style="padding:8px 12px;font-size:13px;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);">${proj.name}<div style="font-size:11px;color:var(--c-text2);">${proj.year||''}</div></div>`;
+      types_.forEach(t=>{
+        const v=p[t];
+        const isMin=v===minV,isMax=v===maxV;
+        html+=`<div style="padding:8px 10px;text-align:center;border-right:0.5px solid var(--c-border);border-bottom:0.5px solid var(--c-border);${isMin?'background:#EAF3DE;':isMax?'background:#FCEBEB;':''}">${v?fmt(v):'—'}${t!=='du_thau'&&p.du_thau&&v?'<div style="font-size:11px;margin-top:2px;">'+fmtDiff(p.du_thau,v)+'</div>':''}</div>`;
+      });
+    });
+    html+=`</div>`;
+    html+=`<div style="display:flex;gap:16px;font-size:12px;color:var(--c-text2);margin-bottom:8px;">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#EAF3DE;border-radius:2px;margin-right:4px;"></span>Giá thấp nhất</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#FCEBEB;border-radius:2px;margin-right:4px;"></span>Giá cao nhất</span>
+      <span>▲/▼ % so với giá dự thầu</span>
+    </div>`;
+  }
+  result.innerHTML=html;
+}
+
+async function runAI(){
+  const itemId=document.getElementById('cmp-item').value;
+  if(!itemId)return;
+  const item=db.items.find(i=>i.id===itemId);
+  const prices=db.prices.filter(p=>p.itemId===itemId);
+  const projects=db.projects;
+  const out=document.getElementById('ai-output');
+  out.innerHTML=`<div class="ai-loading"><div class="spinner"></div>Đang phân tích dữ liệu giá...</div>`;
+  const tableData=prices.map(p=>{
+    const proj=projects.find(x=>x.id===p.projectId)||{name:p.projectId,year:''};
+    return `- ${proj.name} (${proj.year}): Dự thầu=${fmt(p.du_thau)}, NCC=${fmt(p.ncc)}, Ký thực tế=${fmt(p.ky_thuc_te)}`;
+  }).join('\n');
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'Bạn là chuyên gia phân tích giá vật tư xây dựng. Phân tích ngắn gọn, thực tế, có số liệu cụ thể. Phản hồi bằng tiếng Việt, tối đa 200 từ.',
+        messages:[{role:'user',content:`Phân tích dữ liệu giá của: ${item.name} (${item.unit})\n\nDữ liệu theo dự án:\n${tableData}\n\nNhận xét: xu hướng giá, chênh lệch dự thầu vs thực tế, đề xuất khoảng tham khảo.`}]
+      })
+    });
+    const data=await resp.json();
+    out.textContent=data.content?.find(b=>b.type==='text')?.text||'Không có phản hồi';
+  }catch(e){out.textContent='Lỗi kết nối API. Vui lòng thử lại.';}
+}
+
+function renderReport(){
+  const projId=document.getElementById('report-project').value;
+  const cat=document.getElementById('report-category').value;
+  const priceType=document.getElementById('report-type').value;
+  const content=document.getElementById('report-content');
+
+  let filteredItems=db.items;
+  if(cat)filteredItems=filteredItems.filter(i=>i.category===cat);
+
+  let filteredPrices=db.prices;
+  if(projId)filteredPrices=filteredPrices.filter(p=>p.projectId===projId);
+
+  const vendors={};
+  filteredPrices.forEach(p=>{
+    if(!filteredItems.find(i=>i.id===p.itemId))return;
+    const key=priceType;
+    const val=p[key]||0;
+    if(!vendors[key])vendors[key]={total:0,count:0,minVal:Infinity,maxVal:0,avgVal:0,items:[]};
+  });
+
+  let vendorData=[];
+  filteredPrices.forEach(p=>{
+    if(!filteredItems.find(i=>i.id===p.itemId))return;
+    const item=db.items.find(i=>i.id===p.itemId);
+    const proj=db.projects.find(pj=>pj.id===p.projectId);
+    vendorData.push({
+      itemId:p.itemId,
+      itemName:item.name,
+      itemUnit:item.unit,
+      projectId:p.projectId,
+      projectName:proj.name,
+      du_thau:p.du_thau,
+      ncc:p.ncc,
+      ky_thuc_te:p.ky_thuc_te,
+      priceVal:p[priceType],
+      diff:p.du_thau?((p[priceType]-p.du_thau)/p.du_thau*100):0
+    });
+  });
+
+  if(!vendorData.length){
+    content.innerHTML='<div class="empty">Không có dữ liệu phù hợp với bộ lọc</div>';
+    return;
+  }
+
+  // Tính thống kê theo loại giá
+  const stats={
+    totalItems:new Set(vendorData.map(v=>v.itemId)).size,
+    totalProjects:new Set(vendorData.map(v=>v.projectId)).size,
+    totalValue:vendorData.reduce((s,v)=>s+v.priceVal,0),
+    avgValue:Math.round(vendorData.reduce((s,v)=>s+v.priceVal,0)/vendorData.length),
+    minValue:Math.min(...vendorData.map(v=>v.priceVal)),
+    maxValue:Math.max(...vendorData.map(v=>v.priceVal))
+  };
+
+  const priceTypeLabel={'ncc':'Giá NCC chào','ky_thuc_te':'Giá ký thực tế','du_thau':'Giá dự thầu'}[priceType];
+
+  let html=`
+  <div class="report-summary">
+    <div class="summary-row">
+      <div class="summary-item">
+        <div class="summary-label">Tổng vật tư</div>
+        <div class="summary-val">${stats.totalItems}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Tổng dự án</div>
+        <div class="summary-val">${stats.totalProjects}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Giá trung bình</div>
+        <div class="summary-val">${fmt(stats.avgValue)}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Loại giá: ${priceTypeLabel}</div>
+        <div class="summary-val">${vendorData.length}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // Biểu đồ thanh so sánh giá
+  html+=`<div style="background:var(--c-surface2);border:0.5px solid var(--c-border);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:16px;">
+    <div style="font-weight:500;margin-bottom:12px;">So sánh giá theo vật tư</div>`;
+  
+  const itemSummary={};
+  vendorData.forEach(v=>{
+    if(!itemSummary[v.itemId])itemSummary[v.itemId]={name:v.itemName,unit:v.itemUnit,total:0,count:0,min:Infinity,max:0};
+    itemSummary[v.itemId].total+=v.priceVal;
+    itemSummary[v.itemId].count++;
+    itemSummary[v.itemId].min=Math.min(itemSummary[v.itemId].min,v.priceVal);
+    itemSummary[v.itemId].max=Math.max(itemSummary[v.itemId].max,v.priceVal);
+  });
+
+  Object.entries(itemSummary).slice(0,8).forEach(([id,item])=>{
+    const avg=Math.round(item.total/item.count);
+    const range=item.max-item.min;
+    const pct=(item.min/stats.maxValue)*100;
+    html+=`<div class="price-bar">
+      <div class="price-bar-label">${item.name.substring(0,20)}...</div>
+      <div class="price-bar-graph">
+        <div class="price-bar-fill" style="width:${Math.max(20,pct*3)}%;"><span>${fmt(avg)}</span></div>
+      </div>
+      <div style="flex-shrink:0;width:100px;text-align:right;font-size:11px;color:var(--c-text2);">
+        <div>Min: ${fmt(item.min)}</div>
+        <div>Max: ${fmt(item.max)}</div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Bảng chi tiết
+  html+=`
+  <div class="report-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Vật tư</th>
+          <th>Dự án</th>
+          <th style="text-align:center;">Giá dự thầu</th>
+          <th style="text-align:center;">Giá NCC chào</th>
+          <th style="text-align:center;">Giá ký thực tế</th>
+          <th style="text-align:center;background:#E8A020;color:#fff;">${priceTypeLabel}</th>
+          <th style="text-align:center;">% vs DT</th>
+        </tr>
+      </thead>
+      <tbody>`;
+  
+  vendorData.forEach(v=>{
+    const highlightClass=v.priceVal===stats.minValue?'highlight-min':v.priceVal===stats.maxValue?'highlight-max':'';
+    html+=`<tr>
+      <td style="font-weight:500;font-size:12px;">${v.itemName}</td>
+      <td style="font-size:12px;color:var(--c-text2);">${v.projectName}</td>
+      <td style="text-align:right;">${fmt(v.du_thau)}</td>
+      <td style="text-align:right;">${fmt(v.ncc)}</td>
+      <td style="text-align:right;">${fmt(v.ky_thuc_te)}</td>
+      <td style="text-align:right;font-weight:500;${highlightClass?'background:'+highlightClass+';':'background:#E8A020;color:#fff;'}">${fmt(v.priceVal)}</td>
+      <td style="text-align:center;${v.diff>0?'color:#A32D2D;':'color:#27500A;'}font-weight:500;">${v.diff>0?'▲':'▼'}${Math.abs(Math.round(v.diff))}%</td>
+    </tr>`;
+  });
+  
+  html+=`</tbody>
+    </table>
+  </div>`;
+
+  // Hạng NCC (giả định)
+  html+=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
+  const vendorRanking=[
+    {name:'NCC A - Giá cạnh tranh',score:85,items:Math.floor(vendorData.length*0.4),rank:1},
+    {name:'NCC B - Giá trung bình',score:72,items:Math.floor(vendorData.length*0.35),rank:2},
+    {name:'NCC C - Giá cao',score:58,items:Math.floor(vendorData.length*0.25),rank:3}
+  ];
+  vendorRanking.forEach(v=>{
+    const rankClass=['gold','silver','bronze'][v.rank-1];
+    html+=`<div class="vendor-card">
+      <div class="vendor-card-header">
+        <div class="rank-badge ${rankClass}">${v.rank}</div>
+        <div class="vendor-card-title">${v.name}</div>
+      </div>
+      <div class="vendor-metrics">
+        <div class="metric-mini"><div class="metric-mini-label">Điểm</div><div class="metric-mini-val">${v.score}</div></div>
+        <div class="metric-mini"><div class="metric-mini-label">Mục giá</div><div class="metric-mini-val">${v.items}</div></div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  content.innerHTML=html;
+}
+
+function exportReportCSV(){
+  const projId=document.getElementById('report-project').value;
+  const cat=document.getElementById('report-category').value;
+  const priceType=document.getElementById('report-type').value;
+
+  let filteredItems=db.items;
+  if(cat)filteredItems=filteredItems.filter(i=>i.category===cat);
+
+  let filteredPrices=db.prices;
+  if(projId)filteredPrices=filteredPrices.filter(p=>p.projectId===projId);
+
+  let vendorData=[];
+  filteredPrices.forEach(p=>{
+    if(!filteredItems.find(i=>i.id===p.itemId))return;
+    const item=db.items.find(i=>i.id===p.itemId);
+    const proj=db.projects.find(pj=>pj.id===p.projectId);
+    vendorData.push({
+      itemId:p.itemId,
+      itemName:item.name,
+      itemUnit:item.unit,
+      projectId:p.projectId,
+      projectName:proj.name,
+      du_thau:p.du_thau,
+      ncc:p.ncc,
+      ky_thuc_te:p.ky_thuc_te,
+      priceVal:p[priceType],
+      diff:p.du_thau?((p[priceType]-p.du_thau)/p.du_thau*100):0
+    });
+  });
+
+  let csv='Mã vật tư,Tên vật tư,Đơn vị,Mã dự án,Tên dự án,Giá dự thầu,Giá NCC chào,Giá ký thực tế,Giá hiển thị,% vs DT\n';
+  vendorData.forEach(v=>{
+    csv+=`${v.itemId},"${v.itemName}",${v.itemUnit},${v.projectId},"${v.projectName}",${v.du_thau},${v.ncc},${v.ky_thuc_te},${v.priceVal},${Math.round(v.diff)}%\n`;
+  });
+
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const link=document.createElement('a');
+  link.setAttribute('href',URL.createObjectURL(blob));
+  link.setAttribute('download',`bao-cao-ncc-${new Date().toISOString().split('T')[0]}.csv`);
+  link.click();
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['library','compare','projects','report'][i]===tab);});
+  document.getElementById('tab-library').style.display=tab==='library'?'':'none';
+  document.getElementById('tab-compare').style.display=tab==='compare'?'':'none';
+  document.getElementById('tab-projects').style.display=tab==='projects'?'':'none';
+  document.getElementById('tab-report').style.display=tab==='report'?'':'none';
+  if(tab==='report')renderReport();
+}
+
+function openAddItem(){
+  const cats=[...new Set(db.items.map(i=>i.category))];
+  const modal=document.getElementById('modal-content');
+  modal.innerHTML=`<div class="modal-title"><i class="ti ti-plus" aria-hidden="true"></i> Thêm vật tư / thiết bị</div>
+  <div class="form-row">
+    <div class="form-group"><label>Mã hàng</label><input id="f-id" placeholder="VT009" /></div>
+    <div class="form-group"><label>Đơn vị</label><input id="f-unit" placeholder="m, cái, bộ, kg..." /></div>
+  </div>
+  <div class="form-group" style="margin-bottom:10px;"><label>Tên vật tư / thiết bị</label><input id="f-name" placeholder="Nhập tên đầy đủ..." /></div>
+  <div class="form-group" style="margin-bottom:10px;"><label>Loại / danh mục</label><input id="f-cat" list="cat-list" placeholder="Điện, Cơ khí..." /><datalist id="cat-list">${cats.map(c=>`<option>${c}</option>`).join('')}</datalist></div>
+  <div style="background:var(--c-surface2);border-radius:var(--border-radius-md);padding:12px;margin-bottom:10px;">
+    <div style="font-size:12px;font-weight:500;margin-bottom:8px;">Nhập giá cho dự án (tuỳ chọn)</div>
+    <div class="form-group" style="margin-bottom:8px;"><label>Dự án</label><select id="f-proj"><option value="">-- Không nhập giá --</option>${db.projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label>Giá dự thầu</label><input id="f-dt" type="number" placeholder="0" /></div>
+      <div class="form-group"><label>Giá NCC chào</label><input id="f-ncc" type="number" placeholder="0" /></div>
+    </div>
+    <div class="form-group"><label>Giá ký thực tế</label><input id="f-ktt" type="number" placeholder="0" /></div>
+  </div>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal()">Huỷ</button>
+    <button class="btn btn-primary" onclick="saveItem()">Lưu vật tư</button>
+  </div>`;
+  showModal();
+}
+
+function saveItem(){
+  const id=document.getElementById('f-id').value.trim();
+  const name=document.getElementById('f-name').value.trim();
+  const unit=document.getElementById('f-unit').value.trim();
+  const cat=document.getElementById('f-cat').value.trim();
+  if(!id||!name||!unit){alert('Vui lòng nhập Mã hàng, Tên và Đơn vị');return;}
+  if(db.items.find(i=>i.id===id)){alert('Mã hàng đã tồn tại');return;}
+  db.items.push({id,name,unit,category:cat||'Khác'});
+  const proj=document.getElementById('f-proj').value;
+  const dt=parseFloat(document.getElementById('f-dt').value)||0;
+  const ncc=parseFloat(document.getElementById('f-ncc').value)||0;
+  const ktt=parseFloat(document.getElementById('f-ktt').value)||0;
+  if(proj&&(dt||ncc||ktt))db.prices.push({itemId:id,projectId:proj,du_thau:dt,ncc:ncc,ky_thuc_te:ktt});
+  refresh();closeModal();
+}
+
+function openAddProject(){
+  const modal=document.getElementById('modal-content');
+  modal.innerHTML=`<div class="modal-title"><i class="ti ti-briefcase" aria-hidden="true"></i> Thêm dự án</div>
+  <div class="form-row">
+    <div class="form-group"><label>Mã dự án</label><input id="p-id" placeholder="DA005" /></div>
+    <div class="form-group"><label>Năm</label><input id="p-year" placeholder="2024" /></div>
+  </div>
+  <div class="form-group" style="margin-bottom:10px;"><label>Tên dự án</label><input id="p-name" placeholder="Tên công trình..." /></div>
+  <div class="form-group" style="margin-bottom:10px;"><label>Chủ đầu tư</label><input id="p-client" placeholder="Tên công ty..." /></div>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal()">Huỷ</button>
+    <button class="btn btn-primary" onclick="saveProject()">Lưu dự án</button>
+  </div>`;
+  showModal();
+}
+
+function saveProject(){
+  const id=document.getElementById('p-id').value.trim();
+  const name=document.getElementById('p-name').value.trim();
+  if(!id||!name){alert('Vui lòng nhập Mã và Tên dự án');return;}
+  if(db.projects.find(p=>p.id===id)){alert('Mã dự án đã tồn tại');return;}
+  db.projects.push({id,name,client:document.getElementById('p-client').value.trim(),year:document.getElementById('p-year').value.trim()});
+  refresh();closeModal();
+}
+
+function deleteProject(id){
+  if(!confirm('Xoá dự án này?'))return;
+  db.projects=db.projects.filter(p=>p.id!==id);
+  db.prices=db.prices.filter(p=>p.projectId!==id);
+  refresh();
+}
+
+function showModal(){
+  const o=document.getElementById('modal-overlay');
+  o.style.display='flex';
+}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+
+function refresh(){
+  updateStats();populateFilters();renderLibrary();renderProjects();
+  const ci=document.getElementById('cmp-item');
+  if(ci.value)runCompare();
+}
+
+seed();refresh();
+</script>
